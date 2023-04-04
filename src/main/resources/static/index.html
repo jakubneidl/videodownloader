@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #0077be;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        h2 {
+            margin: 20px 0;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #e6e6e6;
+            border-radius: 5px;
+        }
+
+        label {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #0077be;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #005587;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <h1>YouTube Downloader</h1>
+</header>
+<main>
+    <form>
+        <p><strong>Where to find the video ID:</strong></p>
+        <p><i>https://www.youtube.com/watch?v=</i><b>dQw4w9WgXcQ</b><i>&ab_channel=RickAstley</p></i>
+        <label for="videoId">Video ID:</label>
+        <input type="text" id="videoIdInput" name="videoId" required>
+        <label for="startTime">Start Time (optional):</label>
+        <input type="text" id="startTime" name="startTime">
+        <label for="endTime">End Time (optional):</label>
+        <input type="text" id="endTime" name="endTime">
+        <button type="submit">Download</button>
+        <div id="errorMessage" class="error"></div>
+    </form>
+</main>
+
+
+<script>
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const videoId = document.getElementById('videoIdInput').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const url = `/downloads/${videoId}?startTime=${startTime}&endTime=${endTime}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                })
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${videoId}.mp4`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    document.getElementById('errorMessage').innerText = error.message;
+                });
+        });
+
+</script>
+</body>
+</html>
