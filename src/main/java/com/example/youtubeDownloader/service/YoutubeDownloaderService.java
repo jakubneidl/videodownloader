@@ -1,7 +1,6 @@
 package com.example.youtubeDownloader.service;
 
 import com.example.youtubeDownloader.component.VideoTrimmer;
-import com.github.kiulian.downloader.Config;
 import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.downloader.request.RequestVideoFileDownload;
 import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 @Service
@@ -41,19 +39,40 @@ public class YoutubeDownloaderService {
 //    }
 
     @SneakyThrows
-    public void downloadVideo(String videoId, String outputPath, Long startTimeSeconds,
+    public File downloadVideo(String videoId, String outputPath, Long startTimeSeconds,
                               Long endTimeSeconds) throws IOException {
+        boolean trimVideo = true;
         RequestVideoInfo request = new RequestVideoInfo(videoId);
         Response<VideoInfo> response = downloader.getVideoInfo(request);
+
+
         VideoInfo video = response.data();
+
+
+        if (startTimeSeconds == null && endTimeSeconds == null) {
+            trimVideo = false;
+        }
+
+        if (startTimeSeconds == null) {
+            startTimeSeconds = 0L;
+        }
+        if (endTimeSeconds == null) {
+            endTimeSeconds = (long) video.details().lengthSeconds();
+        }
+
         log.info("Video: {}", video);
         VideoFormat videoFormat = video.bestVideoWithAudioFormat();
         RequestVideoFileDownload requestVideoFileDownload = new RequestVideoFileDownload(videoFormat)
                 .saveTo(new File(outputPath));// by default "videos" directory
         Response<File> fileResponse = downloader.downloadVideoFile(requestVideoFileDownload);
         File data = fileResponse.data();
+        Path output = Path.of(data.getPath());
+        if (trimVideo) {
+            output = Path.of(outputPath + "/" + videoId + "_cut.mp4");
+            videoTrimmer.trim(data.toPath(), output, startTimeSeconds, endTimeSeconds);
+        }
 
-        videoTrimmer.trim(data.toPath(), Path.of(outputPath+"/"+videoId+"_cut.mp4"), startTimeSeconds, endTimeSeconds);
+        return output.toFile();
     }
 
 
