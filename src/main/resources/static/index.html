@@ -16,8 +16,14 @@
             padding: 10px;
         }
 
-        h1 {
+        h2 {
             margin: 20px 0;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
         form {
@@ -27,7 +33,7 @@
             margin: 20px auto;
             max-width: 600px;
             padding: 20px;
-            background-color: #f2f2f2;
+            background-color: #e6e6e6;
             border-radius: 5px;
         }
 
@@ -64,22 +70,28 @@
             color: red;
             margin-top: 10px;
         }
+
     </style>
 </head>
 <body>
 <header>
     <h1>YouTube Downloader</h1>
 </header>
-<form>
-    <label for="videoId">Video ID:</label>
-    <input type="text" id="videoIdInput" name="videoId" required>
-    <label for="startTime">Start Time (optional):</label>
-    <input type="text" id="startTime" name="startTime">
-    <label for="endTime">End Time (optional):</label>
-    <input type="text" id="endTime" name="endTime">
-    <button type="submit">Download</button>
-    <div id="errorMessage" class="error"></div>
-</form>
+<main>
+    <form>
+        <p><strong>Where to find the video ID:</strong></p>
+        <p><i>https://www.youtube.com/watch?v=</i><b>dQw4w9WgXcQ</b><i>&ab_channel=RickAstley</p></i>
+        <label for="videoId">Video ID:</label>
+        <input type="text" id="videoIdInput" name="videoId" required>
+        <label for="startTime">Start Time (optional):</label>
+        <input type="text" id="startTime" name="startTime">
+        <label for="endTime">End Time (optional):</label>
+        <input type="text" id="endTime" name="endTime">
+        <button type="submit">Download</button>
+        <div id="errorMessage" class="error"></div>
+    </form>
+</main>
+
 
 <script>
         document.querySelector('form').addEventListener('submit', (event) => {
@@ -110,6 +122,7 @@
                     document.getElementById('errorMessage').innerText = error.message;
                 });
         });
-    </script>
+
+</script>
 </body>
 </html>
