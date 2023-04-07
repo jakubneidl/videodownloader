@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
   $('#video-link').on('input', function() {
     var videoLink = $(this).val();
@@ -11,6 +10,19 @@ $(document).ready(function() {
 
   $('#video-form').submit(function(e) {
     e.preventDefault();
+
+    // Show the loading bar
+    $('#loading-bar').removeClass('hidden');
+    // Simulate progress
+    var progress = 0;
+    var interval = setInterval(function() {
+      progress += Math.random() * 10;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+      }
+      $('#progress').width(progress + '%');
+    }, 200);
 
     var videoLink = $('#video-link').val();
     var startTime = $('#start-time').val();
@@ -31,11 +43,35 @@ $(document).ready(function() {
       downloadUrl += '&endTime=' + endTime;
     }
 
-    var downloadButton = document.createElement('a');
-    downloadButton.href = downloadUrl;
-    downloadButton.innerText = 'Download Video';
-    downloadButton.download = 'video.mp4';
-    document.body.appendChild(downloadButton);
+    // Fetch the video and start the download
+    fetch(downloadUrl)
+      .then((response) => {
+        if (response.ok) {
+          clearInterval(interval);
+          $('#progress').width('100%');
+          return response.blob();
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .then((blob) => {
+        $('#loading-bar').addClass('hidden');
+        $('#progress').width('0');
+        var url = URL.createObjectURL(blob);
+        var downloadButton = document.createElement('a');
+        downloadButton.href = url;
+        downloadButton.download = 'video.mp4';
+        downloadButton.style.display = 'none';
+        document.body.appendChild(downloadButton);
+        downloadButton.click();
+        document.body.removeChild(downloadButton);
+      })
+      .catch((error) => {
+        console.error('Error fetching video:', error);
+        $('#loading-bar').addClass('hidden');
+        $('#progress').width('0');
+        clearInterval(interval);
+      });
 
     $('#video-form')[0].reset();
   });

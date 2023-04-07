@@ -8,8 +8,10 @@
 <body>
 <div class="container">
     <h1>Download YouTube Video</h1>
-    <div id="video-container">
-        <iframe id="video-player" frameborder="0" allowfullscreen></iframe>
+    <div id="video-wrapper">
+        <div id="video-container">
+            <iframe id="video-player" frameborder="0" allowfullscreen></iframe>
+        </div>
     </div>
 
     <form id="video-form">
@@ -29,6 +31,9 @@
         </div>
 
         <button type="submit">Download Video</button>
+        <div id="loading-bar" class="hidden">
+            <div id="progress"></div>
+        </div>
     </form>
 </div>
 

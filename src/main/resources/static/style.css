@@ -11,14 +11,13 @@ body {
 }
 
 .container {
-  background-color: #fff-fff;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
   padding: 20px;
   max-width: 600px;
   width: 100%;
 }
-
 
 h1 {
   font-size: 24px;
@@ -62,12 +61,20 @@ button[type="submit"]:hover {
   background-color: #0056b3;
 }
 
-#video-container {
-  margin-bottom: 20px;
+#video-wrapper {
   position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
   overflow: hidden;
+  width: 100%;
+  padding-top: 56.25%; /* Maintain 16:9 aspect ratio */
+  margin-bottom: 20px;
+}
+
+#video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 #video-player {
@@ -78,3 +85,19 @@ button[type="submit"]:hover {
   height: 100%;
 }
 
+#loading-bar {
+  background-color: #f3f3f3;
+  border-radius: 4px;
+  margin-top: 10px;
+  position: relative;
+  height: 10px;
+  width: 100%;
+}
+
+#progress {
+  background-color: #007bff;
+  border-radius: 4px;
+  height: 100%;
+  position: absolute;
+  width: 0;
+}
