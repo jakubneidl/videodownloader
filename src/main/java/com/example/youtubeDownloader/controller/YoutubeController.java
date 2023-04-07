@@ -1,6 +1,8 @@
 package com.example.youtubeDownloader.controller;
 
+import com.example.youtubeDownloader.service.VideoCleanupService;
 import com.example.youtubeDownloader.service.VideoProcessingService;
+import com.example.youtubeDownloader.uitls.YoutubeVideoIdExtractor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.ByteArrayResource;
@@ -9,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,15 +23,20 @@ import java.nio.file.Path;
 public class YoutubeController {
 
     private final VideoProcessingService videoProcessingService;
+    private final VideoCleanupService cleanupService;
 
     @SneakyThrows
-    @GetMapping("/downloads/{videoId}")
-    public ResponseEntity<Resource> downloadVideo(@PathVariable("videoId") String videoId,
+    @GetMapping("/api/youtube/v1/downloads")
+    public ResponseEntity<Resource> downloadVideo(@RequestParam("videoLink") String videoLink,
                                                   @RequestParam(value = "startTime", required = false) Long startTime,
                                                   @RequestParam(value = "endTime", required = false) Long endTime) {
 
-        String outputPath = "downloads/" + videoId;
-        File file = videoProcessingService.downloadAndCut(videoId, outputPath, startTime, endTime);
+        String videoId = YoutubeVideoIdExtractor.extractVideoId(videoLink);
+        Path tempDirectory = Files.createTempDirectory("downloads-");
+        String outputDir = tempDirectory + videoId;
+        File file = videoProcessingService.downloadAndCut(videoId, outputDir, startTime, endTime);
+
+        cleanupService.addFile(outputDir);
 
         return ResponseEntity.ok()
                 .contentLength(file.length())

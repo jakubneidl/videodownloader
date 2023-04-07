@@ -1,5 +1,6 @@
 package com.example.youtubeDownloader.service;
 
+import com.example.youtubeDownloader.excetion.FailedToDownloadYoutubeVideoException;
 import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.downloader.request.RequestVideoFileDownload;
 import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
@@ -24,6 +25,10 @@ public class YoutubeDownloaderService {
         RequestVideoInfo request = new RequestVideoInfo(videoId);
         Response<VideoInfo> response = downloader.getVideoInfo(request);
         VideoInfo video = response.data();
+        if (video == null) {
+            throw new FailedToDownloadYoutubeVideoException
+                    ("Failed to download video with id: " + videoId + ". Please try again");
+        }
 
         log.info("Video info: {}, videoId: {}", video, videoId);
 
