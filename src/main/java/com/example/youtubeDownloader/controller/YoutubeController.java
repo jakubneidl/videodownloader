@@ -1,6 +1,6 @@
 package com.example.youtubeDownloader.controller;
 
-import com.example.youtubeDownloader.service.YoutubeDownloaderService;
+import com.example.youtubeDownloader.service.VideoProcessingService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.ByteArrayResource;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -22,7 +21,7 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class YoutubeController {
 
-    private final YoutubeDownloaderService youtubeDownloaderService;
+    private final VideoProcessingService videoProcessingService;
 
     @SneakyThrows
     @GetMapping("/downloads/{videoId}")
@@ -31,7 +30,7 @@ public class YoutubeController {
                                                   @RequestParam(value = "endTime", required = false) Long endTime) {
 
         String outputPath = "downloads/" + videoId;
-        File file = youtubeDownloaderService.downloadVideo(videoId, outputPath, startTime, endTime);
+        File file = videoProcessingService.downloadAndCut(videoId, outputPath, startTime, endTime);
 
         return ResponseEntity.ok()
                 .contentLength(file.length())
