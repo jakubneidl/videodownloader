@@ -15,26 +15,27 @@
     </div>
 
     <form id="video-form">
-        <div>
+        <div class="form-group">
             <label for="video-link">Video Link</label>
             <input type="text" id="video-link" name="videoLink" required>
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="start-time">Start Time (optional)</label>
-            <input type="text" id="start-time" name="startTime">
+            <input type="text" id="start-time" name="startTime" placeholder="In seconds">
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="end-time">End Time (optional)</label>
-            <input type="text" id="end-time" name="endTime">
+            <input type="text" id="end-time" name="endTime" placeholder="In seconds">
         </div>
 
         <button type="submit">Download Video</button>
-        <div id="loading-bar" class="hidden">
-            <div id="progress"></div>
-        </div>
     </form>
+</div>
+
+<div id="loading-bar" style="display: none;">
+    <div class="loader"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

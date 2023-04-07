@@ -11,18 +11,8 @@ $(document).ready(function() {
   $('#video-form').submit(function(e) {
     e.preventDefault();
 
-    // Show the loading bar
-    $('#loading-bar').removeClass('hidden');
-    // Simulate progress
-    var progress = 0;
-    var interval = setInterval(function() {
-      progress += Math.random() * 10;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-      }
-      $('#progress').width(progress + '%');
-    }, 200);
+    // Show the spinning loader
+    $('#loading-bar').css('display', 'flex');
 
     var videoLink = $('#video-link').val();
     var startTime = $('#start-time').val();
@@ -47,16 +37,13 @@ $(document).ready(function() {
     fetch(downloadUrl)
       .then((response) => {
         if (response.ok) {
-          clearInterval(interval);
-          $('#progress').width('100%');
           return response.blob();
         } else {
           throw new Error('Network response was not ok');
         }
       })
       .then((blob) => {
-        $('#loading-bar').addClass('hidden');
-        $('#progress').width('0');
+        $('#loading-bar').css('display', 'none');
         var url = URL.createObjectURL(blob);
         var downloadButton = document.createElement('a');
         downloadButton.href = url;
@@ -68,9 +55,7 @@ $(document).ready(function() {
       })
       .catch((error) => {
         console.error('Error fetching video:', error);
-        $('#loading-bar').addClass('hidden');
-        $('#progress').width('0');
-        clearInterval(interval);
+        $('#loading-bar').css('display', 'none');
       });
 
     $('#video-form')[0].reset();
