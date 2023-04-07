@@ -1,5 +1,6 @@
 package com.example.youtubeDownloader.controller;
 
+import com.example.youtubeDownloader.excetion.InvalidTimeIntervalException;
 import com.example.youtubeDownloader.service.VideoCleanupService;
 import com.example.youtubeDownloader.service.VideoProcessingService;
 import com.example.youtubeDownloader.uitls.YoutubeVideoIdExtractor;
@@ -30,6 +31,12 @@ public class YoutubeController {
     public ResponseEntity<Resource> downloadVideo(@RequestParam("videoLink") String videoLink,
                                                   @RequestParam(value = "startTime", required = false) Long startTime,
                                                   @RequestParam(value = "endTime", required = false) Long endTime) {
+
+
+        if (startTime != null && endTime != null && (startTime > endTime)) {
+            String message = "Start time cannot be larger than end time. startTime: " + startTime + " endTime: " + endTime;
+            throw new InvalidTimeIntervalException(message);
+        }
 
         String videoId = YoutubeVideoIdExtractor.extractVideoId(videoLink);
         Path tempDirectory = Files.createTempDirectory("downloads-");
