@@ -41,5 +41,7 @@ public class JavaCvVideoTrimmer implements VideoTrimmer {
         recorder.stop();
         grabber.stop();
 
+        grabber.close();
+        recorder.close();
     }
 }
