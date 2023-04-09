@@ -1,6 +1,8 @@
 package com.example.youtubeDownloader.component;
 
-import com.github.kokorin.jaffree.ffmpeg.*;
+import com.github.kokorin.jaffree.ffmpeg.FFmpeg;
+import com.github.kokorin.jaffree.ffmpeg.UrlInput;
+import com.github.kokorin.jaffree.ffmpeg.UrlOutput;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
