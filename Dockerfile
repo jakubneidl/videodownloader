@@ -12,6 +12,9 @@ WORKDIR /app
 # Copy the project's files into the container
 COPY . .
 
+# Grant execution permissions to the mvnw script
+RUN chmod +x ./mvnw
+
 # Build the Java application
 RUN ./mvnw clean package
 
