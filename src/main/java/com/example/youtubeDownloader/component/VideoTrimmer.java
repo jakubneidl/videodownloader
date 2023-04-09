@@ -12,13 +12,18 @@ import java.util.concurrent.TimeUnit;
 public class VideoTrimmer {
     public void cutVideo(Path inputPath, Path outputPath, Long startTimeSeconds, Long endTimeSeconds) {
 
-        long duration = endTimeSeconds - startTimeSeconds;
+
+        UrlInput input = UrlInput.fromPath(inputPath)
+                .setPosition(startTimeSeconds, TimeUnit.SECONDS);
+
+        if (endTimeSeconds != null) {
+            long duration = endTimeSeconds - startTimeSeconds;
+            input.setDuration(duration, TimeUnit.SECONDS);
+        }
 
         FFmpeg.atPath()
                 .addInput(
-                        UrlInput.fromPath(inputPath)
-                                .setPosition(startTimeSeconds, TimeUnit.SECONDS)
-                                .setDuration(duration, TimeUnit.SECONDS)
+                        input
                 )
                 .setOverwriteOutput(true)
                 .addOutput(
