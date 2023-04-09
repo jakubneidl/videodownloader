@@ -19,4 +19,4 @@ RUN ./mvnw clean package
 EXPOSE 8080
 
 # Start the Java service
-CMD ["java", "-jar", "target/my-java-service.jar"]
+CMD ["java", "-jar", "target/youtubeDownloader-0.0.1-SNAPSHOT.jar"]
